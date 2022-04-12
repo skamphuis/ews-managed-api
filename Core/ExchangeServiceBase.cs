@@ -23,6 +23,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using System.Security.Cryptography.X509Certificates;
+
 namespace Microsoft.Exchange.WebServices.Data
 {
     using System;
@@ -137,7 +139,10 @@ namespace Microsoft.Exchange.WebServices.Data
             }
 
             IEwsHttpWebRequest request = this.HttpWebRequestFactory.CreateRequest(url);
-
+            if (this.ClientCertificates.Count > 0)
+            {
+                request.ClientCertificates.AddRange(this.ClientCertificates);
+            }
             request.PreAuthenticate = this.PreAuthenticate;
             request.Timeout = this.Timeout;
             this.SetContentType(request);
@@ -723,6 +728,17 @@ namespace Microsoft.Exchange.WebServices.Data
                 }
             }
         }
+
+
+        /// <summary>
+        /// Gets or sets the client certificates.
+        /// </summary>
+        /// <returns>The collection of X509 client certificates.</returns>
+        public X509CertificateCollection ClientCertificates
+        {
+            get;
+            set;
+        } = new X509CertificateCollection();
 
         /// <summary>
         /// Gets or sets the timeout used when sending HTTP requests and when receiving HTTP responses, in milliseconds.
